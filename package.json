@@ -4,10 +4,14 @@
   "description": "Gulp plugin for turning SASS variable definitions files into JSON files.",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "./node_modules/.bin/mocha --reporter spec"
   },
   "author": "Nikita Svesnikov <niko@1stdibs.com>",
   "license": "1stdibs",
+  "devDependencies": {
+    "mocha": "^2.2.5",
+    "vinyl": "^0.5.0"
+  },
   "dependencies": {
     "gulp-match": "^0.2.0",
     "gulp-util": "^3.0.0",
