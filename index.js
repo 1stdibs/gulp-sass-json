@@ -4,7 +4,7 @@ var gutil     = require('gulp-util');
 
 module.exports = function() {
     return through(function (file) {
-        var regex = /\$(.*?):(.*?);/g;
+        var regex = /\$(.*?):([\s\S]*?);/g;
         var variables = {};
         var stringifiedContent;
         var jsonVariables;
@@ -24,8 +24,35 @@ module.exports = function() {
             if (m.index === regex.lastIndex) {
                 regex.lastIndex++;
             }
+            // test for sass maps
+            if (m[2].indexOf(':') > -1 &&
+                m[2].indexOf('(') > -1 &&
+                m[2].indexOf(')') > -1 &&
+                m[2].indexOf(',') > -1) {
+                    // Split of the SASS map property
+                    var sassMapRule = m[2].split(',');
+                    // Empty object that will be the JSON property
+                    var outputObj = {};
 
-            variables[m[1].trim()] = m[2].trim();
+                    for (var prop in sassMapRule) {
+                        var sassMapRuleObj = sassMapRule[prop].split(':');
+
+                        // ignore sass map property it it is null or undefined
+                        if (!sassMapRuleObj[0] || !sassMapRuleObj[1]) {
+                            continue;
+                        }
+
+                        // time newlines, whitespaces, and parentheses
+                        var sassMapKey = sassMapRuleObj[0].replace(/[\(\n]/, '').trim(); 
+                        var sassMapVal = sassMapRuleObj[1].trim();
+
+                        outputObj[sassMapKey] = sassMapVal;
+                }
+                variables[m[1].trim()] = outputObj;
+            // non sass maps rules
+            } else {
+                variables[m[1].trim()] = m[2].trim();
+            }
         }
 
         jsonVariables = JSON.stringify(variables, null, '\t');
