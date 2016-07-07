@@ -1,6 +1,6 @@
 {
   "name": "gulp-sass-json",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Gulp plugin for turning SASS variable definitions files into JSON files.",
   "main": "index.js",
   "scripts": {
